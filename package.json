@@ -8,8 +8,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "bootstrap-vue": "^2.18.1",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "lodash": "^4.17.20",
+    "vis-data": "^7.1.0",
+    "vis-network": "^8.4.1",
+    "vis-util": "^4.3.4",
+    "vue": "^2.6.11",
+    "vue-vis-network": "^1.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
