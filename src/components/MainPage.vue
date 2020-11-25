@@ -40,7 +40,7 @@
       <b-col>
         <h5><b>Gramática en la FNCh:</b></h5>
         <ul>
-          <li v-for="(simbol, i) in Object.keys(GLC)" :key="i">{{simbol}} → {{GLC[simbol].join(" | ")}}</li>
+          <li v-for="(simbol, i) in Object.keys(GLC)" :key="i"><b>{{simbol}}</b> → {{GLC[simbol].join(" | ")}}</li>
         </ul>
       </b-col>
     </b-row>
