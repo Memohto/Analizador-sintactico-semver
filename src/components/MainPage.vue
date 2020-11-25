@@ -6,11 +6,11 @@
     <b-alert
       :show="dismissCountDown"
       dismissible
-      variant="danger"
+      :variant="variant"
       @dismissed="dismissCountDown=0"
       @dismiss-count-down="countDownChanged"
     >
-      <span>Cadena no válida</span> 
+      <span>{{verification? "Cadena válida": "Cadena no válida"}}</span> 
     </b-alert>
     <b-row style="margin:30px;">
       <b-col cols="4">
@@ -60,38 +60,37 @@ export default {
             'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-'],
         Pd: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
         Dg: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        Dgs: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDgs'],
+        Ds: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDs'],
         Ic: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
             'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 
             'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
             'w', 'x', 'y', 'z', '-'],
-        Ics: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
+        Is: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
             'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 
             'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-            'w', 'x', 'y', 'z', '-', 'IcIcs'],
-        Ni: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDgs'],
+            'w', 'x', 'y', 'z', '-', 'IcIs'],
+        Ni: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDs'],
         Ai: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
             'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0'],
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIs', 'IsNd', 'IsB4'],
         Bi: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
             'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDgs'],
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIs', 'IsNd', 'IsB4',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDs'],
         Bu: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
             'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDgs', 'BiA2'],
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIs', 'IsNd', 'IsB4',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDs', 'BiA2'],
         Pi: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
             'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDgs'],
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIs', 'IsNd', 'IsB4',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDs'],
         Pr: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
             'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDgs', 'PiA3'],
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIs', 'IsNd', 'IsB4',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDs', 'PiA3'],
         Vc: ['NiA4'],
-        Vs: ['NiA4', 'VcA9', 'VcA10', 'VcA11'],
-        A0: ['NdIcs'],
+        Vs: ['NiA4', 'VcA9', 'VcB5', 'VcB1'],
         A1: ['.'],
         A2: ['A1Bu'],
         A3: ['A1Pr'],
@@ -101,26 +100,30 @@ export default {
         A7: ['-'],
         A8: ['+'],
         A9: ['A7Pr'],
-        A10: ['A8Bu'],
-        A11: ['A7A12'],
-        A12: ['PrA13'],
-        A13: ['A8Bu']
+        B1: ['A7B2'],
+        B2: ['PrB3'],
+        B3: ['A8Bu'],
+        B4: ['NdIs'],
+        B5: ['A8Bu']
       },
       dismissSecs: 3,
-      dismissCountDown: 0
+      dismissCountDown: 0,
+      variant: "warning",
+      verification: false
     }
   },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
       let matrix = this.createMatrix(this.input.length);
-      let verification = this.CYK(matrix);
-      if(verification) {
+      this.verification = this.CYK(matrix);
+      if(this.verification) {
         console.log("Sí es aceptada!!");
-      } else {
+        this.variant = "success"
         this.showAlert();
-        this.nodes = [];
-        this.edges = [];
+      } else {
+        this.variant = "danger"
+        this.showAlert();
         console.log("No es aceptada :(");
       }
     },
