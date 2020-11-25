@@ -133,7 +133,10 @@ export default {
         },
         edges: {
           arrows: "to",
-          color: "blue"
+          color: "orange"
+        },
+        nodes: {
+          color: "rgb(247, 202, 77)"
         }
       },
       dismissSecs: 3,
