@@ -20,6 +20,13 @@
           versioning 2.0.0 o no. La documentación para este sistema de versionamiento puede ser revisada 
           <a href="https://semver.org/" target="_blank">aquí</a>.
         </p>
+        <b-button v-b-modal.modal-xl size="sm">Gramática en la FNCh</b-button>
+        <b-modal id="modal-xl" size="xl" title="Gramática en la FNCh" ok-only>
+          <ul>
+            <li v-for="(simbol, i) in Object.keys(GLC)" :key="i"><b>{{simbol}}</b> → {{GLC[simbol].join(" | ")}}</li>
+          </ul> 
+        </b-modal>
+        <br><br>
         <p>Por ende, este programa sólo acepta caracteres alfanuméricos</p>
         <b-form @submit="onSubmit">
           <b-form-group
@@ -38,10 +45,6 @@
         </b-form>
       </b-col>
       <b-col>
-        <!-- <h5><b>Gramática en la FNCh:</b></h5>
-        <ul>
-          <li v-for="(simbol, i) in Object.keys(GLC)" :key="i"><b>{{simbol}}</b> → {{GLC[simbol].join(" | ")}}</li>
-        </ul> -->
         <network
           class="wrapper"
           ref="network"
