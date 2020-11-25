@@ -38,10 +38,17 @@
         </b-form>
       </b-col>
       <b-col>
-        <h5><b>Gramática en la FNCh:</b></h5>
+        <!-- <h5><b>Gramática en la FNCh:</b></h5>
         <ul>
           <li v-for="(simbol, i) in Object.keys(GLC)" :key="i"><b>{{simbol}}</b> → {{GLC[simbol].join(" | ")}}</li>
-        </ul>
+        </ul> -->
+        <network
+          class="wrapper"
+          ref="network"
+          :nodes="nodes"
+          :edges="edges"
+          :options="options">
+        </network>
       </b-col>
     </b-row>
   </div>
@@ -106,6 +113,26 @@ export default {
         B4: ['NdIs'],
         B5: ['A8Bu']
       },
+      nodes: [],
+      edges: [],
+      options: {
+        layout: {
+          hierarchical: {
+            enabled:true,
+            levelSeparation: 70,
+            nodeSpacing: 100,
+            blockShifting: false,
+            edgeMinimization: false,
+            parentCentralization: false,
+            direction: 'UD',
+            sortMethod: 'directed',  
+          }
+        },
+        edges: {
+          arrows: "to",
+          color: "blue"
+        }
+      },
       dismissSecs: 3,
       dismissCountDown: 0,
       variant: "warning",
@@ -116,14 +143,18 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       let matrix = this.createMatrix(this.input.length);
-      this.verification = this.CYK(matrix);
+      let productions = {};
+      [this.verification, productions] = this.CYK(matrix);
       if(this.verification) {
         console.log("Sí es aceptada!!");
         this.variant = "success"
         this.showAlert();
+        this.createTree(matrix, productions);
       } else {
         this.variant = "danger"
         this.showAlert();
+        this.nodes = [];
+        this.edges = [];
         console.log("No es aceptada :(");
       }
     },
@@ -138,6 +169,7 @@ export default {
       return m;
     },
     CYK(matrix) {
+      let productions = {};
       for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix.length-i; j++) {
           if(i == 0) {
@@ -152,6 +184,12 @@ export default {
                   let r = this.inGrammar(e);
                   if(r != "0") {
                     newVal += r+"|";
+                    let id = j.toString() + "," + (j+i).toString();
+                    if(productions[id]) {
+                      productions[id].push(j.toString()+","+(j+i-k).toString()+"&"+(j+n).toString()+","+(j+i).toString());
+                    } else {
+                      productions[id] = [j.toString()+","+(j+i-k).toString()+"&"+(j+n).toString()+","+(j+i).toString()];
+                    }
                   }
                 });
               }
@@ -163,7 +201,7 @@ export default {
         }
       }
       // console.log(matrix);
-      return matrix[0][matrix.length-1].includes("Vs");
+      return [matrix[0][matrix.length-1].includes("Vs"), productions];
     },
     inGrammar(s) {
       let res = ""
@@ -193,6 +231,68 @@ export default {
         return arr.indexOf(item) == pos;
       })
       return uniqueArr.join("|");
+    },
+    createTree(matrix, productions) {
+      this.nodes = [];
+      this.edges = [];
+      let key = "0,"+(matrix.length-1).toString();
+      this.generateConections(matrix, productions, 0, key, "Vs");
+      let dic = {};
+      let i = 0;
+      this.nodes.forEach(n => {
+        dic[n.id] = i;
+        i++;
+      })
+      this.nodes = this.nodes.map(n => {
+        return {id: dic[n.id], label: n.label}
+      })
+      this.edges = this.edges.map(e => {
+        return {from: dic[e.from], to: dic[e.to]}
+      })
+    },
+    generateConections(matrix, productions, i, key, val) {
+      let indeces = key.split(",");
+      this.nodes.push({
+        id: key, 
+        label: val
+      });
+      if(!productions[key]) {
+        let uid = this.generateUID();
+        this.nodes.push({
+          id: uid,
+          label: this.input.substring(parseInt(indeces[0]), parseInt(indeces[1])+1)
+        });
+        this.edges.push({from: key, to: uid});
+        return;
+      }
+      let arr = productions[key][i].split("&");
+      indeces = arr[0].split(",");
+      let posibleLeftVal = matrix[parseInt(indeces[0])][parseInt(indeces[1])];
+      indeces = arr[1].split(",");
+      let posibleRigthVal = matrix[parseInt(indeces[0])][parseInt(indeces[1])];
+      let combs = this.getCombinations(posibleLeftVal, posibleRigthVal);
+      let production = "";
+      for(let c of combs) {
+        if(this.GLC[val].includes(c)) {
+          production = c;
+          break;
+        }
+      }
+      if(production) {
+        this.edges.push({from: key, to: arr[0]});
+        this.generateConections(matrix, productions, 0, arr[0], production[0]+production[1]);
+        this.edges.push({from: key, to: arr[1]});
+        this.generateConections(matrix, productions, 0, arr[1], production[2]+production[3]);
+      } else {
+        this.nodes.pop()
+        this.generateConections(matrix, productions, i+1, key, val);
+      }
+    },
+    generateUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown
