@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-navbar type="dark" variant="info">
-      <b-navbar-brand href="#">Analizador sintáctico de aritmética simple</b-navbar-brand>
+    <b-navbar type="dark" variant="warning">
+      <b-navbar-brand href="#">Analizador Sintáctico Para Semantic Versioning 2.0.0</b-navbar-brand>
     </b-navbar>
     <b-alert
       :show="dismissCountDown"
@@ -15,33 +15,12 @@
     <b-row style="margin:30px;">
       <b-col cols="4">
         <h5><b>Instrucciones:</b></h5>
-        <p>Dada una cadena, este programa te verifica si ésta es válida como una expresión aritmética
-          simple. La gramática que se utiliza es la siguiente:
+        <br>
+        <p>Dada una cadena, este programa te verifica si ésta es válida como una expresión para semantic 
+          versioning 2.0.0 o no. La documentación para este sistema de versionamiento puede ser revisada 
+          <a href="https://semver.org/" target="_blank">aquí</a>.
         </p>
-        <b-button v-b-toggle.sidebar size="sm">Aquí</b-button>
-        <b-sidebar id="sidebar" title="Gramática" shadow>
-          <div>
-            <ul>
-              <li>S -> AG | SH | SI | SK | LL | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</li>
-              <li>A -> (</li>
-              <li>B -> )</li>
-              <li>C -> +</li>
-              <li>D -> -</li>
-              <li>E -> *</li>
-              <li>F -> /</li>
-              <li>G -> SB</li>
-              <li>H -> CS</li>
-              <li>I -> DS</li>
-              <li>J -> ES</li>
-              <li>K -> FS</li>
-              <li>L -> LL | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</li>
-            </ul>
-          </div>
-        </b-sidebar>
-        <br><br>
-        <p>Por lo tanto los únicos caracteres válidos para este programa son: 
-          dígitos, "+", "-", "*", "/", "(", ")"
-        </p>
+        <p>Por ende, este programa sólo acepta caracteres alfanuméricos</p>
         <b-form @submit="onSubmit">
           <b-form-group
             id="input-group"
@@ -59,13 +38,10 @@
         </b-form>
       </b-col>
       <b-col>
-        <network
-          class="wrapper"
-          ref="network"
-          :nodes="nodes"
-          :edges="edges"
-          :options="options">
-        </network>
+        <h5><b>Gramática en la FNCh:</b></h5>
+        <ul>
+          <li v-for="(simbol, i) in Object.keys(GLC)" :key="i">{{simbol}} → {{GLC[simbol].join(" | ")}}</li>
+        </ul>
       </b-col>
     </b-row>
   </div>
@@ -79,72 +55,56 @@ export default {
     return {
       input: "",
       GLC: {
-        S: ['UB', 'VC', 'WC', 'XF'],
-        U: ['A"'],
-        B: ['YH', 'NO', 'ON', 'ZO', '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', 'PM', '1', '2', '3', 
-        '4', '5', '6', '7', '8', '9'],
-        V: ['A#'], 
-        C: ['!J', 'NO', 'ON', 'ZO', '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', 'TM', '1', '2', '3', 
-        '4', '5', '6', '7', '8', '9'],
-        W: ['$#'],
-        X: ['&%'],
-        F: ['0', 'PM', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        A: ['XF'],
-        Y: ['I%'],
-        H: ['YH', 'NO', 'ON', 'ZO', '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', 'PM', '1', '2', '3', 
-        '4', '5', '6', '7', '8', '9'],
-        N: ['-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-        O: ['QO', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', 'a', 'b', 'c', 'd', 'e', 'f', 
-        'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 
-        'x', 'y', 'z'],
-        Z: ['ON'],
-        P: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        M: ['TM', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        '!': ['K%'],
-        J: ['!J', 'NO', 'ON', 'ZO', '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', 'TM', '1', '2', '3', 
-        '4', '5', '6', '7', '8', '9'],
-        T: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        D: ['0', 'PM', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        E: ['0', 'PM', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        I: ['NO', 'ON', 'ZO', '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', 'PM', '1', '2', '3', 
-        '4', '5', '6', '7', '8', '9'],
-        K: ['NO', 'ON', 'ZO', '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', 'TM', '1', '2', '3', 
-        '4', '5', '6', '7', '8', '9'],
-        Q: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 
-        'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-        '"': ['-'],
-        '#': ['+'],
-        '$': ['UB'],
-        '&': ['/E'],
-        '%': ['.'],
-        '/': ['D%']
-      },
-      nodes: [],
-      edges: [],
-      options: {
-        layout: {
-          hierarchical: {
-            enabled:true,
-            levelSeparation: 70,
-            nodeSpacing: 100,
-            blockShifting: false,
-            edgeMinimization: false,
-            parentCentralization: false,
-            direction: 'UD',
-            sortMethod: 'directed',  
-          }
-        },
-        edges: {
-          arrows: "to",
-          color: "blue"
-        }
+        Nd: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
+            'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-'],
+        Pd: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+        Dg: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+        Dgs: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDgs'],
+        Ic: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
+            'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 
+            'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+            'w', 'x', 'y', 'z', '-'],
+        Ics: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
+            'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 
+            'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+            'w', 'x', 'y', 'z', '-', 'IcIcs'],
+        Ni: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDgs'],
+        Ai: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
+            'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0'],
+        Bi: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
+            'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDgs'],
+        Bu: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
+            'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'DgDgs', 'BiA2'],
+        Pi: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
+            'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDgs'],
+        Pr: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
+            'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+            'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', 'NdIcs', 'IcsNd', 'IcsA0',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'PdDgs', 'PiA3'],
+        Vc: ['NiA4'],
+        Vs: ['NiA4', 'VcA9', 'VcA10', 'VcA11'],
+        A0: ['NdIcs'],
+        A1: ['.'],
+        A2: ['A1Bu'],
+        A3: ['A1Pr'],
+        A4: ['A1A5'],
+        A5: ['NiA6'],
+        A6: ['A1Ni'],
+        A7: ['-'],
+        A8: ['+'],
+        A9: ['A7Pr'],
+        A10: ['A8Bu'],
+        A11: ['A7A12'],
+        A12: ['PrA13'],
+        A13: ['A8Bu']
       },
       dismissSecs: 3,
       dismissCountDown: 0
@@ -154,10 +114,9 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       let matrix = this.createMatrix(this.input.length);
-      let [verification, productions] = this.CYK(matrix);
+      let verification = this.CYK(matrix);
       if(verification) {
         console.log("Sí es aceptada!!");
-        this.createTree(matrix, productions);
       } else {
         this.showAlert();
         this.nodes = [];
@@ -176,7 +135,6 @@ export default {
       return m;
     },
     CYK(matrix) {
-      let productions = {};
       for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix.length-i; j++) {
           if(i == 0) {
@@ -191,12 +149,6 @@ export default {
                   let r = this.inGrammar(e);
                   if(r != "0") {
                     newVal += r+"|";
-                    let id = j.toString() + "," + (j+i).toString();
-                    if(productions[id]) {
-                      productions[id].push(j.toString()+","+(j+i-k).toString()+"&"+(j+n).toString()+","+(j+i).toString());
-                    } else {
-                      productions[id] = [j.toString()+","+(j+i-k).toString()+"&"+(j+n).toString()+","+(j+i).toString()];
-                    }
                   }
                 });
               }
@@ -207,7 +159,8 @@ export default {
           }
         }
       }
-      return [matrix[0][matrix.length-1].includes("S"), productions];
+      // console.log(matrix);
+      return matrix[0][matrix.length-1].includes("Vs");
     },
     inGrammar(s) {
       let res = ""
@@ -237,51 +190,6 @@ export default {
         return arr.indexOf(item) == pos;
       })
       return uniqueArr.join("|");
-    },
-    createTree(matrix, productions) {
-      this.nodes = [];
-      this.edges = [];
-      let key = "0,"+(matrix.length-1).toString();
-      this.generateConections(matrix, productions, key);
-      let dic = {};
-      let i = 0;
-      this.nodes.forEach(n => {
-        dic[n.id] = i;
-        i++;
-      })
-      this.nodes = this.nodes.map(n => {
-        return {id: dic[n.id], label: n.label}
-      })
-      this.edges = this.edges.map(e => {
-        return {from: dic[e.from], to: dic[e.to]}
-      })
-    },
-    generateConections(matrix, productions, key) {
-      let indeces = key.split(",");
-      this.nodes.push({
-        id: key, 
-        label: matrix[parseInt(indeces[0])][parseInt(indeces[1])]
-      });
-      if(!productions[key]) {
-        let uid = this.generateUID();
-        this.nodes.push({
-          id: uid,
-          label: this.input.substring(parseInt(indeces[0]), parseInt(indeces[1])+1)
-        });
-        this.edges.push({from: key, to: uid});
-        return;
-      }
-      let arr = productions[key][0].split("&");
-      this.edges.push({from: key, to: arr[0]});
-      this.generateConections(matrix, productions, arr[0]);
-      this.edges.push({from: key, to: arr[1]});
-      this.generateConections(matrix, productions, arr[1]);
-    },
-    generateUID() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown
